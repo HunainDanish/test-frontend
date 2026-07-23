@@ -17,6 +17,8 @@ interface FormErrors {
   email?: string;
   role?: string;
   assignedStore?: string;
+  password?: string;
+  confirmPassword?: string;
 }
 
 export function UserModal({ user, isOpen, onClose, onSave }: UserModalProps) {
@@ -30,6 +32,8 @@ export function UserModal({ user, isOpen, onClose, onSave }: UserModalProps) {
       status: 'Active',
     }
   );
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
@@ -45,6 +49,8 @@ export function UserModal({ user, isOpen, onClose, onSave }: UserModalProps) {
         status: 'Active',
       });
     }
+    setPassword('');
+    setConfirmPassword('');
     setErrors({});
   }, [user, isOpen]);
 
@@ -72,6 +78,21 @@ export function UserModal({ user, isOpen, onClose, onSave }: UserModalProps) {
 
     if (!formData.assignedStore) {
       newErrors.assignedStore = 'Assigned store is required';
+    }
+
+    // Password validation only for new users
+    if (!user) {
+      if (!password || password.trim() === '') {
+        newErrors.password = 'Password is required';
+      } else if (password.length < 8) {
+        newErrors.password = 'Password must be at least 8 characters';
+      }
+
+      if (!confirmPassword || confirmPassword.trim() === '') {
+        newErrors.confirmPassword = 'Confirm password is required';
+      } else if (password !== confirmPassword) {
+        newErrors.confirmPassword = 'Passwords do not match';
+      }
     }
 
     setErrors(newErrors);
@@ -225,6 +246,61 @@ export function UserModal({ user, isOpen, onClose, onSave }: UserModalProps) {
               </p>
             )}
           </div>
+
+          {/* Password - only for add */}
+          {!user && (
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errors.password) {
+                    setErrors({ ...errors, password: undefined });
+                  }
+                }}
+                className={`w-full px-3 py-2 bg-muted border rounded text-foreground ${
+                  errors.password ? 'border-red-500' : 'border-border'
+                }`}
+                placeholder="e.g., SecurePass123!"
+              />
+              {errors.password && (
+                <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.password}</p>
+              )}
+              <p className="text-xs text-muted-foreground mt-1.5">
+                Share this password with the user directly (e.g. Slack, in person).
+              </p>
+            </div>
+          )}
+
+          {/* Confirm Password - only for add */}
+          {!user && (
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  if (errors.confirmPassword) {
+                    setErrors({ ...errors, confirmPassword: undefined });
+                  }
+                }}
+                className={`w-full px-3 py-2 bg-muted border rounded text-foreground ${
+                  errors.confirmPassword ? 'border-red-500' : 'border-border'
+                }`}
+                placeholder="Confirm password"
+              />
+              {errors.confirmPassword && (
+                <p className="text-xs text-red-600 dark:text-red-400 mt-1">{errors.confirmPassword}</p>
+              )}
+            </div>
+          )}
 
           {/* Status - only for edit */}
           {user && (

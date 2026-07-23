@@ -1,6 +1,6 @@
 'use client';
 
-import { Trash2, Edit2 } from 'lucide-react';
+import { Trash2, Edit2, Key } from 'lucide-react';
 import type { User } from '@/lib/admin-users-data';
 import { ROLE_COLORS, getStatusColor } from '@/lib/admin-users-data';
 
@@ -8,9 +8,10 @@ interface UserTableProps {
   users: User[];
   onEdit: (user: User) => void;
   onDelete: (userId: string) => void;
+  onResetPassword: (user: User) => void;
 }
 
-export function UserTable({ users, onEdit, onDelete }: UserTableProps) {
+export function UserTable({ users, onEdit, onDelete, onResetPassword }: UserTableProps) {
   return (
     <div className="overflow-x-auto border border-border rounded-lg bg-card">
       <table className="w-full text-sm">
@@ -52,6 +53,13 @@ export function UserTable({ users, onEdit, onDelete }: UserTableProps) {
                     className="p-1.5 hover:bg-muted rounded transition-colors text-muted-foreground hover:text-foreground"
                   >
                     <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => onResetPassword(user)}
+                    title="Reset password"
+                    className="p-1.5 hover:bg-blue-500/10 rounded transition-colors text-blue-600 dark:text-blue-400"
+                  >
+                    <Key className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => onDelete(user.id)}

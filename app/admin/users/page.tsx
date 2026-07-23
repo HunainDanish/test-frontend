@@ -5,6 +5,7 @@ import { Plus } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { UserTable } from '@/components/admin/user-table';
 import { UserModal } from '@/components/admin/user-modal';
+import { ResetPasswordModal } from '@/components/admin/reset-password-modal';
 import { MOCK_USERS } from '@/lib/admin-users-data';
 import type { User } from '@/lib/admin-users-data';
 
@@ -12,6 +13,8 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>(MOCK_USERS);
   const [editingUser, setEditingUser] = useState<User | undefined>();
   const [showAddModal, setShowAddModal] = useState(false);
+  const [resetPasswordUser, setResetPasswordUser] = useState<User | undefined>();
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
 
   const handleAddUser = () => {
     setEditingUser(undefined);
@@ -38,6 +41,17 @@ export default function AdminUsersPage() {
     if (confirm('Are you sure you want to delete this user?')) {
       setUsers(users.filter((u) => u.id !== userId));
     }
+  };
+
+  const handleResetPassword = (user: User) => {
+    setResetPasswordUser(user);
+    setShowResetPasswordModal(true);
+  };
+
+  const handleSaveResetPassword = (newPassword: string) => {
+    // In a real app, this would call an API to reset the password
+    console.log(`Password reset for ${resetPasswordUser?.name}: ${newPassword}`);
+    setShowResetPasswordModal(false);
   };
 
   const activeUsersCount = users.filter((u) => u.status === 'Active').length;
@@ -83,16 +97,22 @@ export default function AdminUsersPage() {
 
         {/* User Table */}
         <div>
-          <UserTable users={users} onEdit={handleEditUser} onDelete={handleDeleteUser} />
+          <UserTable users={users} onEdit={handleEditUser} onDelete={handleDeleteUser} onResetPassword={handleResetPassword} />
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Modals */}
       <UserModal
         user={editingUser}
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
         onSave={handleSaveUser}
+      />
+      <ResetPasswordModal
+        userName={resetPasswordUser?.name}
+        isOpen={showResetPasswordModal}
+        onClose={() => setShowResetPasswordModal(false)}
+        onSave={handleSaveResetPassword}
       />
     </DashboardShell>
   );
