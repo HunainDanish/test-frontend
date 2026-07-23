@@ -5,7 +5,6 @@ export interface MockUser {
   name: string;
   email: string;
   role: UserRole;
-  mustChangePassword: boolean;
 }
 
 export interface AuthSession {
@@ -20,28 +19,24 @@ export const MOCK_USERS: MockUser[] = [
     name: 'Sarah Chen',
     email: 'sarah.chen@retailco.com',
     role: 'Store Manager',
-    mustChangePassword: false,
   },
   {
     id: '2',
     name: 'Marcus Johnson',
     email: 'marcus.johnson@retailco.com',
     role: 'Operations Manager',
-    mustChangePassword: true, // This user will need to set a new password
   },
   {
     id: '3',
     name: 'Elena Rodriguez',
     email: 'elena.rodriguez@retailco.com',
     role: 'Retail Analyst',
-    mustChangePassword: false,
   },
   {
     id: '4',
     name: 'David Kim',
     email: 'david.kim@retailco.com',
     role: 'System Administrator',
-    mustChangePassword: false,
   },
 ];
 

@@ -69,14 +69,9 @@ export default function LoginPage() {
       return;
     }
 
-    // Save session and redirect
+    // Save session and redirect to Overview
     saveAuthSession(user);
-
-    if (user.mustChangePassword) {
-      router.push('/set-new-password');
-    } else {
-      router.push('/');
-    }
+    router.push('/');
   };
 
   return (
